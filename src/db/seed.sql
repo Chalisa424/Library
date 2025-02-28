@@ -1,5 +1,5 @@
 -- ข้อมูลผู้แต่ง
-INSERT INTO authors (first_name, last_name, organization) VALUES
+INSERT INTO Authors (firstName, lastName, affiliation) VALUES
 ('J.K.', 'Rowling', 'Bloomsbury'),
 ('George', 'Orwell', 'Penguin'),
 ('Harper', 'Lee', 'J.B. Lippincott & Co.'),
@@ -12,7 +12,7 @@ INSERT INTO authors (first_name, last_name, organization) VALUES
 ('H.G.', 'Wells', 'Heinemann');
 
 -- ข้อมูลหนังสือ
-INSERT INTO books (title, isbn, category, author_id) VALUES
+INSERT INTO Book (title, isbn, category, authorId) VALUES
 ('Harry Potter and the Sorcerer''s Stone', '9780747532743', 'Fantasy', 1),
 ('Harry Potter and the Chamber of Secrets', '9780747538486', 'Fantasy', 1),
 ('Harry Potter and the Prisoner of Azkaban', '9780747542155', 'Fantasy', 1),
@@ -35,7 +35,7 @@ INSERT INTO books (title, isbn, category, author_id) VALUES
 ('A Tale of Two Cities', '9780141439600', 'Historical Fiction', 4);
 
 -- ข้อมูลสมาชิ
-INSERT INTO members (first_name, last_name, phone_number) VALUES
+INSERT INTO Member (firstName, lastName, phoneNumber) VALUES
 ('John', 'Doe', '123-456-7890'),
 ('Jane', 'Smith', '987-654-3210'),
 ('Alice', 'Johnson', '456-789-1234'),
@@ -48,19 +48,19 @@ INSERT INTO members (first_name, last_name, phone_number) VALUES
 ('Isabella', 'White', '852-963-7410');
 
 -- ประวัติการยืมหนังสือ
-INSERT INTO loans (book_id, member_id, borrowed_date, due_date) VALUES
-(1, 1, NOW(), NOW() + INTERVAL '14 days'),
-(5, 2, NOW(), NOW() + INTERVAL '7 days'),
-(10, 3, NOW(), NOW() + INTERVAL '10 days'),
-(15, 4, NOW(), NOW() + INTERVAL '12 days'),
-(20, 5, NOW(), NOW() + INTERVAL '15 days'),
-(3, 6, NOW(), NOW() + INTERVAL '9 days'),
-(7, 7, NOW(), NOW() + INTERVAL '8 days'),
-(12, 8, NOW(), NOW() + INTERVAL '11 days'),
-(18, 9, NOW(), NOW() + INTERVAL '13 days'),
-(2, 10, NOW(), NOW() + INTERVAL '6 days');
+INSERT INTO Loan (bookId, memberId, borrowDate, dueDate,returnDate,quantity) VALUES
+(1, 1, NOW(), NOW() + INTERVAL 14 DAY, NOW() - INTERVAL 2 DAY, 1),
+(5, 2, NOW(), NOW() + INTERVAL 7 DAY, NULL, 2),  
+(10, 3, NOW(), NOW() + INTERVAL 10 DAY, NOW() - INTERVAL 1 DAY, 1), 
+(15, 4, NOW(), NOW() + INTERVAL 12 DAY, NULL, 3),
+(20, 5, NOW(), NOW() + INTERVAL 15 DAY, NULL, 2),
+(3, 6, NOW(), NOW() + INTERVAL 9 DAY, NULL, 1),
+(7, 7, NOW(), NOW() + INTERVAL 8 DAY, NOW() - INTERVAL 3 DAY, 1), 
+(12, 8, NOW(), NOW() + INTERVAL 11 DAY, NULL, 2),
+(18, 9, NOW(), NOW() + INTERVAL 13 DAY, NULL, 1),
+(2, 10, NOW(), NOW() + INTERVAL 6 DAY, NULL, 1);
 
 -- บางเล่มถูกคืนแล้ว
-UPDATE loans SET returned_date = NOW() - INTERVAL '2 days' WHERE book_id IN (1, 5, 10);
-UPDATE loans SET returned_date = NOW() - INTERVAL '1 days' WHERE book_id IN (15, 20);
-UPDATE loans SET returned_date = NOW() - INTERVAL '3 days' WHERE book_id IN (3, 7);
+UPDATE Loan SET returnDate = DATE_SUB(NOW(), INTERVAL 2 DAY) WHERE bookId IN (1, 5, 10);
+UPDATE Loan SET returnDate = DATE_SUB(NOW(), INTERVAL 1 DAY) WHERE bookId IN (15, 20);
+UPDATE Loan SET returnDate = DATE_SUB(NOW(), INTERVAL 3 DAY) WHERE bookId IN (3, 7);
