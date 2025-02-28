@@ -1,6 +1,5 @@
-
 import { LoanRepository } from '../repository/LoanRepository';
-import { Loan } from '../models/Loan';
+import { Loan } from '@prisma/client'; 
 
 export class LoanService {
   private loanRepository: LoanRepository;
@@ -9,10 +8,12 @@ export class LoanService {
     this.loanRepository = new LoanRepository();
   }
 
-  async createLoan(loanData: Partial<Loan>): Promise<Loan> {
+  
+  async createLoan(loanData: { bookId: number; memberId: number; quantity: number; dueDate: Date }): Promise<Loan> {
     return this.loanRepository.createLoan(loanData);
   }
 
+ 
   async getLoansByDueDate(dueDate: Date): Promise<Loan[]> {
     return this.loanRepository.getLoansByDueDate(dueDate);
   }
