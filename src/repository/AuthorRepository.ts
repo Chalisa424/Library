@@ -2,6 +2,12 @@ import { PrismaClient } from '@prisma/client';
 import { Author } from '../models/Author';
 
 export class AuthorRepository {
+  searchAuthors(name: string): Author[] | PromiseLike<Author[]> {
+    throw new Error('Method not implemented.');
+  }
+  getAuthorById(authorId: number): Author | PromiseLike<Author | null> | null {
+    throw new Error('Method not implemented.');
+  }
   private prisma: PrismaClient;
 
   constructor() {
