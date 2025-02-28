@@ -9,6 +9,11 @@ app.use(express.json());
 
 const port = process.env.PORT || 3000;
 
+// เส้นทางหลัก (root route)
+app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to the Library API');
+});
+
 ///////// Endpoint สำหรับหนังสือ ///////////
 
 // ดึงข้อมูลหนังสือทั้งหมด
@@ -119,5 +124,5 @@ app.post('/loans', async (req: Request, res: Response) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Server is running on http://localhost:${port}`);
 });
