@@ -1,27 +1,62 @@
+import { PrismaClient } from '@prisma/client';
 
-import { BookRepository } from '../repository/BookRepository';
-import { Book } from '../models/ฺBook';
+const prisma = new PrismaClient();
 
 export class BookService {
-  private bookRepository: BookRepository;
-
-  constructor() {
-    this.bookRepository = new BookRepository();
+  // ดึงข้อมูลหนังสือทั้งหมด
+  async getAllBooks() {
+    return await prisma.book.findMany();
   }
 
-  async getAllBooks(): Promise<Book[]> {
-    return this.bookRepository.getAllBooks();
+  // ดึงข้อมูลหนังสือตาม id
+  async getBookById(id: number) {
+    return await prisma.book.findUnique({
+      where: { id }
+    });
   }
 
-  async searchBooksByTitle(title: string): Promise<Book[]> {
-    return this.bookRepository.searchBooksByTitle(title);
+  // เพิ่มหนังสือใหม่
+  async addBook(newBook: any) {
+    return await prisma.book.create({
+      data: newBook
+    });
   }
 
-  async getBooksByDueDate(dueDate: Date): Promise<Book[]> {
-    return this.bookRepository.getBooksByDueDate(dueDate);
+  // ค้นหาหนังสือจากชื่อ
+  async searchBooksByTitle(title: string) {
+    const lowerCaseTitle = title.toLowerCase();
+    return await prisma.book.findMany({
+      where: {
+        title: {
+          contains: lowerCaseTitle,
+        },
+      },
+    });
   }
 
-  async getBooksNotReturned(): Promise<Book[]> {
-    return this.bookRepository.getBooksNotReturned();
+  // ค้นหาหนังสือที่มีกำหนดวันคืนตามวันที่ที่กำหนด
+  async getBooksByDueDate(dueDate: Date) {
+    return await prisma.loan.findMany({
+      where: {
+        dueDate: {
+          lte: dueDate, // ค้นหาหนังสือที่มีกำหนดการคืนก่อนวันที่กำหนด
+        },
+      },
+      include: {
+        book: true, // ดึงข้อมูลของหนังสือที่เกี่ยวข้อง
+      },
+    });
+  }
+
+  // ค้นหาหนังสือที่ยังไม่ได้คืน
+  async getBooksNotReturned() {
+    return await prisma.loan.findMany({
+      where: {
+        returnDate: null, // ตรวจสอบว่า returnDate เป็น null (ยังไม่คืน)
+      },
+      include: {
+        book: true, // ดึงข้อมูลหนังสือที่เกี่ยวข้อง
+      },
+    });
   }
 }

@@ -10,6 +10,14 @@ export class AuthorService {
   }
 
   async getAllAuthors(): Promise<Author[]> {
-    return this.authorRepository.getAllAuthors();
+    return await this.authorRepository.getAllAuthors();
+  }
+
+  async getAuthorById(authorId: number): Promise<Author | null> {
+    return await this.authorRepository.getAuthorById(authorId) ?? null;
+  }
+
+  async searchAuthors(name: string): Promise<Author[]> {
+    return await this.authorRepository.searchAuthors(name);
   }
 }

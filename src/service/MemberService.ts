@@ -1,19 +1,48 @@
+import { PrismaClient } from '@prisma/client';
 
-import { MemberRepository } from '../repository/MemberRepository';
-import { Member } from '../models/Member';
+const prisma = new PrismaClient();
 
 export class MemberService {
-  private memberRepository: MemberRepository;
-
-  constructor() {
-    this.memberRepository = new MemberRepository();
+  async getAllMembers() {
+    // ดึงข้อมูลสมาชิกทั้งหมดพร้อมกับ loans
+    return await prisma.member.findMany({
+      include: {
+        loans: true, // ให้ดึงข้อมูล loans ด้วย
+      },
+    });
   }
 
-  async getMemberByName(name: string): Promise<Member[]> {
-    return this.memberRepository.getMemberByName(name);
+  async getMemberByName(name: string) {
+    // ค้นหาสมาชิกตามชื่อ โดยใช้ toLowerCase
+    const lowerCaseName = name.toLowerCase();
+    return await prisma.member.findMany({
+      where: {
+        OR: [
+          {
+            firstName: {
+              contains: lowerCaseName,
+            },
+          },
+          {
+            lastName: {
+              contains: lowerCaseName,
+            },
+          },
+        ],
+      },
+      include: {
+        loans: true, 
+      },
+    });
   }
 
-  async getMemberById(memberId: number): Promise<Member | null> {
-    return this.memberRepository.getMemberById(memberId);
+  async getMemberById(memberId: number) {
+    // ค้นหาสมาชิกตาม ID พร้อมกับ loans
+    return await prisma.member.findUnique({
+      where: { id: memberId },
+      include: {
+        loans: true, 
+      },
+    });
   }
 }
