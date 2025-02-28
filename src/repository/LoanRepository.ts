@@ -1,5 +1,5 @@
 
-import { PrismaClient, Book } from '@prisma/client';
+import { PrismaClient, Book, Loan } from '@prisma/client';
 
 
 export class LoanRepository {
@@ -9,9 +9,15 @@ export class LoanRepository {
     this.prisma = new PrismaClient();
   }
 
-  async createLoan(loanData: Partial<Loan>): Promise<Loan> {
+  async createLoan(loanData: { bookId: number; memberId: number; quantity: number; dueDate: Date }): Promise<Loan> {
     return await this.prisma.loan.create({
-      data: loanData,
+      data: {
+        bookId: loanData.bookId,
+        memberId: loanData.memberId,
+        quantity: loanData.quantity,
+        dueDate: loanData.dueDate,
+
+      },
     });
   }
 
