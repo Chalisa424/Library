@@ -1,6 +1,5 @@
 // src/repository/MemberRepository.ts
-import { PrismaClient } from '@prisma/client';
-import { Member } from '../models/Member';
+import { PrismaClient, Member } from '@prisma/client';
 
 export class MemberRepository {
   private prisma: PrismaClient;
@@ -13,18 +12,8 @@ export class MemberRepository {
     return await this.prisma.member.findMany({
       where: {
         OR: [
-          {
-            firstName: {
-              contains: name,
-              mode: 'insensitive',
-            },
-          },
-          {
-            lastName: {
-              contains: name,
-              mode: 'insensitive',
-            },
-          },
+          { firstName: { contains: name.toLowerCase() } },
+          { lastName: { contains: name.toLowerCase() } },
         ],
       },
     });

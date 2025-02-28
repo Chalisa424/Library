@@ -34,7 +34,7 @@ model Member {
   id        Int     @id @default(autoincrement())
   firstName String
   lastName  String
-  phone     String  @unique
+  phoneNumber     String  @unique
   loans     Loan[]
 }
 

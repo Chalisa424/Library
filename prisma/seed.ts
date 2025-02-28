@@ -34,7 +34,7 @@ await prisma.book.createMany({
     data: {
       firstName: "Alice",
       lastName: "Johnson",
-      phone: "0812345678",
+      phoneNumber: "0812345678",
     },
   });
 
@@ -45,6 +45,7 @@ await prisma.book.createMany({
       bookId: 1, // เปลี่ยนเป็น ID ของหนังสือที่สร้าง
       borrowDate: new Date(),
       dueDate: new Date(new Date().setDate(new Date().getDate() + 7)), // กำหนดคืนใน 7 วัน
+      quantity: 1, // specify the quantity value
     },
   });
 
