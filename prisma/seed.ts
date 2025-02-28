@@ -8,7 +8,7 @@ async function main() {
         data:{
             firstName : "Jonh",
             lastName:"Willson",
-            company:"Tech Publishing",
+            affiliation:"Tech Publishing",
         },
     });
 
@@ -16,7 +16,7 @@ async function main() {
         data: {
           firstName: "Jane",
           lastName: "Smith",
-          company: "Literary House",
+          affiliation: "Literary House",
         },
       });
 
