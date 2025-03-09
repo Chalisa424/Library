@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 
 // เส้นทางหลัก (root route)
 app.get('/', (req: Request, res: Response) => {
-  res.send('Welcome to the Library API');
+  res.send('Welcome to the Library Application');
 });
 
 ///////// Endpoint สำหรับหนังสือ ///////////
