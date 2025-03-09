@@ -2,6 +2,9 @@
 import { PrismaClient } from '@prisma/client';
 import { Book } from '@prisma/client';
 
+const prisma = new PrismaClient();
+
+
 export class BookRepository {
   private prisma: PrismaClient;
 
@@ -49,3 +52,25 @@ export class BookRepository {
     });
   }
 }
+
+export async function getAllBooksWithAuthorPagination(
+  pageSize: number,
+  pageNo: number
+) {
+  return await prisma.book.findMany({
+    skip: pageSize * (pageNo - 1), // ข้ามข้อมูลตามหน้า
+    take: pageSize, // จำนวนข้อมูลต่อหน้า
+    select: {
+      id: true,
+      title: true,
+      category: true,
+      author: {
+        select: {
+          firstName: true, // เลือกเฉพาะชื่อ author
+          lastName: true, // เลือกเฉพาะนามสกุล author
+        },
+      },
+    },
+  });
+}
+  
