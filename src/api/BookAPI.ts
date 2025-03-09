@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
-import { BookService } from "../service/BookService";
+import { BookService, getAllBooksWithPagination } from "../service/BookService";
 
 export class BookAPI {
+  getAllBooksWithPagination(pageSize: number, pageNo: number): any {
+      throw new Error('Method not implemented.');
+  }
   private bookService: BookService;
 
   constructor() {
@@ -34,3 +37,4 @@ export class BookAPI {
     res.json(books);
   }
 }
+
