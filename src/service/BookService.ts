@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import * as repo from '../repository/BookRepository';
 
 const prisma = new PrismaClient();
 
@@ -60,3 +61,9 @@ export class BookService {
     });
   }
 }
+
+export function getAllBooksWithPagination(pageSize: number, pageNo: number) {
+    return repo.getAllBooksWithAuthorPagination(pageSize, pageNo);
+  }
+  
+  
