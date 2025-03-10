@@ -11,8 +11,8 @@ const bookAPI = new BookAPI();
 router.get('/', async (req, res) => {
     if (req.query.pageSize && req.query.pageNo) {
       // ถ้ามีการส่ง pageSize และ pageNo มา ให้ทำ pagination
-      const pageSize = parseInt(req.query.pageSize as string);
-      const pageNo = parseInt(req.query.pageNo as string);
+      const pageSize = parseInt(req.query.pageSize as string) || 3;
+      const pageNo = parseInt(req.query.pageNo as string) || 1;
       const books = await service.getAllBooksWithPagination(pageSize, pageNo);
          
       const totalBooks = await service.count();
