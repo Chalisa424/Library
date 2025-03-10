@@ -14,8 +14,14 @@ router.get('/', async (req, res) => {
       const pageSize = parseInt(req.query.pageSize as string);
       const pageNo = parseInt(req.query.pageNo as string);
       const books = await service.getAllBooksWithPagination(pageSize, pageNo);
-          const totalBooks = await service.count();
-          res.json({ totalBooks, books });
+         
+      const totalBooks = await service.count();
+      res.setHeader("x-total-count", totalBooks.toString());
+         res.json(books);
+           
+           } else if (req.query.category) {
+           const category = req.query.category;
+      
       
     } else if (req.query.category){
       // ถ้าไม่มี pageSize และ pageNo ให้ดึงข้อมูลหนังสือทั้งหมด
