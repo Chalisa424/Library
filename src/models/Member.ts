@@ -1,4 +1,5 @@
 import { Loan } from "@prisma/client";
+import type { Book } from "./Book";
 
 // src/models/Member.ts
 export interface Member {
