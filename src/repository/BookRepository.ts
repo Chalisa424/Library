@@ -74,7 +74,7 @@ export async function getAllBooksWithAuthorPagination(
   });
 }
 
-export function countEvent() {
+export function countBooks() {
     return prisma.book.count();
   }
   
