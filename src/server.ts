@@ -15,7 +15,30 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 ///////// Endpoint สำหรับหนังสือ ///////////
+app.get('/books', async (req: Request, res: Response) => {
+  try {
+      const pageSize = parseInt(req.query.pageSize as string) || 20; // ค่า default เป็น 10
+      const pageNo = parseInt(req.query.pageNo as string) || 1;
 
+      // นับจำนวนหนังสือทั้งหมด
+      const totalBooks = await prisma.book.count();
+
+      // ดึงข้อมูลหนังสือตามหน้า
+      const books = await prisma.book.findMany({
+          skip: (pageNo - 1) * pageSize,  // ข้ามข้อมูลตามหน้า
+          take: pageSize,                 // ดึงข้อมูลตามจำนวนที่กำหนด
+          include: {
+              author: true,  // รวมข้อมูลผู้เขียนด้วย
+          },
+      });
+
+      res.json({totalBooks,books});
+      
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
 // ดึงข้อมูลหนังสือทั้งหมด
 app.get('/books', async (req: Request, res: Response) => {
   const books = await prisma.book.findMany({
@@ -35,7 +58,7 @@ app.get('/books/search', async (req: Request, res: Response) => {
     where: {
       title: {
         // ใช้ toLowerCase เพื่อแปลงตัวอักษรเป็นตัวพิมพ์เล็ก
-        contains: title.toLowerCase(),
+        contains: title,
       },
     },
   });

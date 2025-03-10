@@ -1,72 +1,111 @@
-import { PrismaClient } from '@prisma/client';
+import { Book } from '@prisma/client';
 import * as repo from '../repository/BookRepository';
 
-const prisma = new PrismaClient();
-
 export class BookService {
+  countBooks() {
+    throw new Error("Method not implemented.");
+  }
+  private bookRepository: repo.BookRepository;
+
+  constructor() {
+    this.bookRepository = new repo.BookRepository();
+  }
+
   // ดึงข้อมูลหนังสือทั้งหมด
-  async getAllBooks() {
-    return await prisma.book.findMany();
+  async getAllBooks(pageSize: number, pageNo: number): Promise<Book[]> {
+    return await this.bookRepository.getAllBooks(pageSize, pageNo);
   }
 
   // ดึงข้อมูลหนังสือตาม id
-  async getBookById(id: number) {
-    return await prisma.book.findUnique({
-      where: { id }
-    });
+  async getBookById(id: number): Promise<Book | null> {
+    return await this.bookRepository.getBookById(id);
   }
 
   // เพิ่มหนังสือใหม่
-  async addBook(newBook: any) {
-    return await prisma.book.create({
-      data: newBook
-    });
+  async addBook(newBook: Book): Promise<Book> {  // ใช้ประเภท Book แทน any
+    return await this.bookRepository.addBook(newBook);
   }
 
   // ค้นหาหนังสือจากชื่อ
-  async searchBooksByTitle(title: string) {
-    const lowerCaseTitle = title.toLowerCase();
-    return await prisma.book.findMany({
-      where: {
-        title: {
-          contains: lowerCaseTitle,
-        },
-      },
-    });
+  async searchBooksByTitle(title: string): Promise<Book[]> {
+    return await this.bookRepository.searchBooksByTitle(title);
   }
 
   // ค้นหาหนังสือที่มีกำหนดวันคืนตามวันที่ที่กำหนด
-  async getBooksByDueDate(dueDate: Date) {
-    return await prisma.loan.findMany({
-      where: {
-        dueDate: {
-          lte: dueDate, // ค้นหาหนังสือที่มีกำหนดการคืนก่อนวันที่กำหนด
-        },
-      },
-      include: {
-        book: true, // ดึงข้อมูลของหนังสือที่เกี่ยวข้อง
-      },
-    });
+  async getBooksByDueDate(dueDate: Date): Promise<Book[]> {
+    return await this.bookRepository.getBooksByDueDate(dueDate);
   }
 
   // ค้นหาหนังสือที่ยังไม่ได้คืน
-  async getBooksNotReturned() {
-    return await prisma.loan.findMany({
-      where: {
-        returnDate: null, // ตรวจสอบว่า returnDate เป็น null (ยังไม่คืน)
-      },
-      include: {
-        book: true, // ดึงข้อมูลหนังสือที่เกี่ยวข้อง
-      },
-    });
+  async getBooksNotReturned(): Promise<Book[]> {
+    return await this.bookRepository.getBooksNotReturned();
+  }
+
+  // ดึงหนังสือพร้อม pagination
+  async getBooksByPage(pageSize: number, pageNo: number): Promise<Book[]> {
+    return await this.bookRepository.getBooksByPage(pageSize, pageNo);
+  }
+
+  // ดึงหนังสือพร้อมผู้เขียน (พร้อม pagination)
+  async getAllBooksWithAuthorPagination(
+    pageSize: number,
+    pageNo: number
+  ): Promise<Book[]> {
+    return await this.bookRepository.getAllBooksWithAuthorPagination(pageSize, pageNo);
+  }
+
+  // ดึงหนังสือตาม category พร้อม pagination
+  async getBooksByCategoryWithPagination(
+    category: string,
+    pageSize: number,
+    pageNo: number
+  ): Promise<Book[]> {
+    return await this.bookRepository.getBooksByCategoryWithPagination(category, pageSize, pageNo);
+  }
+
+  // นับจำนวนหนังสือทั้งหมด
+  async count(): Promise<number> {
+    return await this.bookRepository.countBooks();
+  }
+
+  // ใน BookService
+
+  // นับจำนวนหนังสือตาม category
+  async countBooksByCategory(category: string): Promise<number> {
+    return await this.bookRepository.countBooksByCategory(category);
+  }
+
+  // เพิ่มฟังก์ชันที่ต้องการ
+  async getAllBooksWithPagination(
+    pageSize: number,
+    pageNo: number
+  ): Promise<Book[]> {
+    return await this.bookRepository.getBooksByPage(pageSize, pageNo);
   }
 }
 
-export function getAllBooksWithPagination(pageSize: number, pageNo: number) {
-    return repo.getAllBooksWithAuthorPagination(pageSize, pageNo);
-  }
-  
-  export function count(){
-      return repo.countBooks();
-    }
-      
+// ฟังก์ชัน export ที่อยู่ภายนอก BookService
+export async function getAllBooksWithPagination(
+  pageSize: number,
+  pageNo: number
+): Promise<Book[]> {
+  return await repo.getAllBooksWithAuthorPagination(pageSize, pageNo);
+}
+
+export async function getBooksByCategoryWithPagination(
+  category: string,
+  pageSize: number,
+  pageNo: number
+): Promise<Book[]> {
+  return await repo.getBooksByCategoryWithPagination(category, pageSize, pageNo);
+}
+
+export async function count(): Promise<number> {
+  const bookRepository = new repo.BookRepository();
+  return bookRepository.countBooks();
+}
+
+export async function countBooksByCategory(category: string): Promise<number> {
+  const bookRepository = new repo.BookRepository();
+  return bookRepository.countBooksByCategory(category);
+}
