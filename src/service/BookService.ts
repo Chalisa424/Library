@@ -66,4 +66,7 @@ export function getAllBooksWithPagination(pageSize: number, pageNo: number) {
     return repo.getAllBooksWithAuthorPagination(pageSize, pageNo);
   }
   
-  
+  export function count(){
+      return repo.countBooks();
+    }
+      
