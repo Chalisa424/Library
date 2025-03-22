@@ -14,22 +14,31 @@ app.get('/', (req: Request, res: Response) => {
   res.send('Welcome to the Library Application');
 });
 
+
 ///////// Endpoint สำหรับหนังสือ ///////////
 app.get('/books', async (req: Request, res: Response) => {
+
+  const pageSize = parseInt(req.query.pageSize as string) ||3; 
+  const pageNo = parseInt(req.query.pageNo as string) || 1;
+  const keyword = req.query.keyword as string;
+  
   try {
-      const pageSize = parseInt(req.query.pageSize as string) || 20; // ค่า default เป็น 10
-      const pageNo = parseInt(req.query.pageNo as string) || 1;
 
       // นับจำนวนหนังสือทั้งหมด
       const totalBooks = await prisma.book.count();
 
       // ดึงข้อมูลหนังสือตามหน้า
       const books = await prisma.book.findMany({
-          skip: (pageNo - 1) * pageSize,  // ข้ามข้อมูลตามหน้า
-          take: pageSize,                 // ดึงข้อมูลตามจำนวนที่กำหนด
-          include: {
-              author: true,  // รวมข้อมูลผู้เขียนด้วย
-          },
+        where: {
+          id: {
+            in: [1, 2, 3] 
+          }
+        },
+        skip: (pageNo - 1) * pageSize,  
+        take: pageSize,                 
+        include: {
+          author: true,  
+        },
       });
 
       res.json({totalBooks,books});
