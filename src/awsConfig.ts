@@ -1,13 +1,22 @@
 import { S3Client } from "@aws-sdk/client-s3";
 
-const s3Client = new S3Client({
-      credentials: {
-        accessKeyId: "y55a478fd7a840911ae3a69f9fcab98da",
-        secretAccessKey:
-          "092e1916864bec5688db30c7a0ae51650ae54f6e4339b922da6f0bed9b6ceb98"
-      },
-      endpoint: "https://lxvierdlpaxfozxgpnre.supabase.co/storage/v1/s3",
-      region: "ap-southeast-1",
-      forcePathStyle: true
-    });
-    
+const accessKeyId = process.env.AWS_ACCESS_KEY_ID;
+const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY;
+const endpoint = process.env.SUPABASE_ENDPOINT_URL;
+const region = process.env.AWS_REGION;
+if (!accessKeyId || !secretAccessKey || !endpoint || !region) {
+  throw new Error("Missing required environment variables for AWS S3 configuration");
+}
+
+ export const s3Client = new S3Client({
+   credentials: {
+
+    accessKeyId,
+    secretAccessKey
+   },
+
+  endpoint,
+  region,
+   forcePathStyle: true
+
+ });
