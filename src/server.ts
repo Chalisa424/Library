@@ -44,17 +44,12 @@ app.get('/books', async (req: Request, res: Response) => {
 
       // ดึงข้อมูลหนังสือตามหน้า
       const books = await prisma.book.findMany({
-        where: {
-          id: {
-            in: [1, 2, 3] 
-          }
-        },
-        skip: (pageNo - 1) * pageSize,  
-        take: pageSize,                 
-        include: {
-          author: true,  
-        },
-      });
+        where: !req.query.pageSize && !req.query.pageNo ? { id: { in: [1, 2, 3] } } : {}, 
+      take: pageSize,                 
+      include: {
+        author: true,  
+      },
+    });
 
       res.setHeader('x-total-count', totalBooks.toString());
 
