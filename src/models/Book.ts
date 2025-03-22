@@ -8,7 +8,7 @@ export interface Book {
   isbn: string;
   category: string;
   authorId: number;  // ความสัมพันธ์กับ Author
-  author: Author | null;
+  aauthor?: string;
   members: Member[];  // ความสัมพันธ์กับ Member
 }
 
