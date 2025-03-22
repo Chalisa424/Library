@@ -1,4 +1,5 @@
 import { PrismaClient, Book } from '@prisma/client';
+import { PageBook } from '../models/Book';
 
 const prisma = new PrismaClient();
 
@@ -57,18 +58,44 @@ export class BookRepository {
   }
 
   //  ดึงหนังสือพร้อม pagination (รวมข้อมูลคนเขียน)
-  async getAllBooksWithAuthorPagination(pageSize: number, pageNo: number): Promise<Book[]> {
-    const skip = (pageNo - 1) * pageSize;
-    return await this.prisma.book.findMany({
-      skip,
+  async getAllBooksWithAuthorPagination(
+    pageSize: number,
+    pageNo: number,
+    keyword: string = '' // กำหนดค่าเริ่มต้นให้ keyword เป็นค่าว่าง
+  ): Promise<{ count: number; books: Book[] }> {
+    const where = keyword
+      ? {
+          OR: [
+            { title: { contains: keyword } },
+            { description: { contains: keyword } },
+            { category: { contains: keyword } },
+          ],
+        }
+      : {};
+  
+    const books = await this.prisma.book.findMany({
+      where,
+      skip: (pageNo - 1) * pageSize,
       take: pageSize,
       include: {
-        author: true,
+        author: {
+          select: {
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
     });
+  
+    const booksWithAuthorId = books.map(book => ({
+      ...book,
+      authorId: book.authorId, 
+    }));
+  
+    const count = await this.prisma.book.count({ where });
+    return { count, books: booksWithAuthorId };
   }
-
-  // นับจำนวนหนังสือทั้งหมด
+  
   async countBooks(): Promise<number> {
     return await this.prisma.book.count();
     

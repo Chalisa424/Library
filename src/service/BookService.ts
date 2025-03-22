@@ -49,11 +49,11 @@ export class BookService {
   // ดึงหนังสือพร้อมผู้เขียน (พร้อม pagination)
   async getAllBooksWithAuthorPagination(
     pageSize: number,
-    pageNo: number
-  ): Promise<Book[]> {
-    return await this.bookRepository.getAllBooksWithAuthorPagination(pageSize, pageNo);
+    pageNo: number,
+    keyword?: string
+  ): Promise<{ count: number; books: Book[] }> {
+    return await this.bookRepository.getAllBooksWithAuthorPagination(pageSize, pageNo, keyword);
   }
-
   // ดึงหนังสือตาม category พร้อม pagination
   async getBooksByCategoryWithPagination(
     category: string,

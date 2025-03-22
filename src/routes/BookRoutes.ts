@@ -6,14 +6,14 @@ import type { Book } from "../models/Book";
 const router = express.Router();
 const bookAPI = new BookAPI();
 
+
 // ดึงข้อมูลหนังสือทั้งหมด (พร้อมรองรับ pagination)
 router.get('/', async (req, res) => {
   console.log("Received parameters: pageSize =", req.query.pageSize, "pageNo =", req.query.pageNo);
+  
   const pageSize = parseInt(req.query.pageSize as string) || 3;
   const pageNo = parseInt(req.query.pageNo as string) || 1;
-  const books = await service.getAllBooksWithPagination(pageSize, pageNo);  
   const totalBooks = await service.count();
-  const keyword = req.query.keyword as string;
 
 
   try {
