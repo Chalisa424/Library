@@ -1,14 +1,39 @@
 import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
+import type { Book } from "./models/Book";
+import multer from 'multer';
+import { uploadFile } from './service/UploadFileService';
+
+
 
 dotenv.config();
 const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
+const upload = multer({ storage: multer.memoryStorage() });
 
 
 const port = process.env.PORT || 3000;
+
+app.post('/upload', upload.single('file'), async (req: any, res: any) => {
+    try {
+      const file = req.file;
+      if (!file) {
+        return res.status(400).send('No file uploaded.');
+      }
+  
+      const bucket = 'images';
+      const filePath = `uploads`;
+   
+      await uploadFile(bucket, filePath, file);
+  
+      res.status(200).send('File uploaded successfully.');
+    } catch (error) {
+      res.status(500).send('Error uploading file.');
+    }
+  });
+  
 
 app.use((req, res, next) => {
   res.removeHeader('Date');
