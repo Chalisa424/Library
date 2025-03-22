@@ -7,7 +7,22 @@ const prisma = new PrismaClient();
 const app = express();
 app.use(express.json());
 
+
 const port = process.env.PORT || 3000;
+
+app.use((req, res, next) => {
+  
+  res.removeHeader('Date');
+  res.removeHeader('Connection');
+  res.removeHeader('Keep-Alive');
+  res.removeHeader('Content-Type');
+  res.removeHeader('Content-Length');
+
+  next();
+});
+
+app.set('etag', false);
+
 
 // เส้นทางหลัก (root route)
 app.get('/', (req: Request, res: Response) => {
@@ -41,7 +56,9 @@ app.get('/books', async (req: Request, res: Response) => {
         },
       });
 
-      res.json({totalBooks,books});
+      res.setHeader('x-total-count', totalBooks.toString());
+
+      res.json({ totalBooks, books });
       
   } catch (error) {
       console.error(error);
